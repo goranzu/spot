@@ -21,23 +21,26 @@ public sealed class InMemoryWeeklyParkingSpotRepository : IWeeklyParkingSpotRepo
         };
     }
 
-    public IEnumerable<WeeklyParkingSpot> GetAll()
+    public async Task<IEnumerable<WeeklyParkingSpot>> GetAllAsync()
     {
+        await Task.CompletedTask;
         return _weeklyParkingSpots;
     }
 
-    public WeeklyParkingSpot? Get(ParkingSpotId id)
+    public async Task<WeeklyParkingSpot?> GetAsync(ParkingSpotId id)
     {
+        await Task.CompletedTask;
         return _weeklyParkingSpots.SingleOrDefault(x => x.Id == id);
     }
 
-    public void Add(WeeklyParkingSpot weeklyParkingSpot)
+    public Task AddAsync(WeeklyParkingSpot weeklyParkingSpot)
     {
         _weeklyParkingSpots.Add(weeklyParkingSpot);
+        return Task.CompletedTask;
     }
 
-    public void Update(WeeklyParkingSpot weeklyParkingSpot)
+    public Task UpdateAsync(WeeklyParkingSpot weeklyParkingSpot)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }

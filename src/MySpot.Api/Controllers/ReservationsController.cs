@@ -10,16 +10,16 @@ namespace MySpot.Api.Controllers;
 public sealed class ReservationsController : ControllerBase
 {
     private readonly IReservationService _reservationService;
-    
+
     public ReservationsController(IReservationService reservationService)
     {
         _reservationService = reservationService;
     }
 
     [HttpGet("{id:guid}")]
-    public ActionResult<ReservationDto> Get(Guid id)
+    public async Task<ActionResult<ReservationDto>> Get(Guid id)
     {
-        var reservation = _reservationService.Get(id);
+        var reservation = await _reservationService.GetAsync(id);
 
         if (reservation is null)
         {
@@ -30,44 +30,29 @@ public sealed class ReservationsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ReservationDto[]> Get()
+    public async Task<ActionResult<ReservationDto[]>> Get()
     {
-        return Ok(_reservationService.GetAllWeeklyReservations());
+        return Ok(await _reservationService.GetAllWeeklyReservationsAsync());
     }
 
     [HttpPost]
-    public ActionResult Post(CreateReservation command)
+    public async Task<ActionResult> Post(CreateReservation command)
     {
-        var id = _reservationService.Create(command with { ReservationId = Guid.NewGuid() });
-        if (id is null)
-        {
-            return BadRequest();
-        }
-
-        return CreatedAtAction(nameof(Get), new { Id = id }, default);
+        await _reservationService.CreateAsync(command with { ReservationId = Guid.NewGuid() });
+        return CreatedAtAction(nameof(Get), new { Id = command.ReservationId }, default);
     }
 
     [HttpPut("{id:guid}")]
-    public ActionResult Put(Guid id, ChangeReservationLicencePlate command)
+    public async Task<ActionResult> Put(Guid id, ChangeReservationLicencePlate command)
     {
-        var succeeded = _reservationService.Update(command with { ReservationId = id });
-        if (!succeeded)
-        {
-            return BadRequest();
-        }
-
+        await _reservationService.UpdateAsync(command with { ReservationId = id });
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    public ActionResult Delete(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
-        var deleted = _reservationService.Delete(new DeleteReservation(id));
-        if (!deleted)
-        {
-            return BadRequest();
-        }
-
+        await _reservationService.DeleteAsync(new DeleteReservation(id));
         return NoContent();
     }
 }

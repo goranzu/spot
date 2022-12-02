@@ -5,16 +5,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 {
     // Add services to the container.
-    builder.Services.AddControllers();
-
+    // register services of each layer
     builder.Services
-        .AddInfrastructure()
+        .AddInfrastructure(builder.Configuration)
         .AddApplication();
 }
 
 var app = builder.Build();
 
 {
-    app.MapControllers();
+    // use middlewares defined by the layers
+    app.UseInfrastructure();
     app.Run();
 }
