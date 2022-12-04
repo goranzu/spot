@@ -1,4 +1,5 @@
 using MySpot.Application;
+using MySpot.Core;
 using MySpot.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
     // register services of each layer
     builder.Services
         .AddInfrastructure(builder.Configuration)
-        .AddApplication();
+        .AddApplication()
+        .AddCore();
 }
 
 var app = builder.Build();
